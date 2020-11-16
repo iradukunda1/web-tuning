@@ -1,0 +1,75 @@
+* {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+canvas {
+  position: relative;
+  top: 100px;
+  margin-top: auto;
+  border: 1px solid gray;
+  background: url("../images/image_sal4vg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#controls {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 0.5em 2em;
+  border: 1px solid gray;
+  background-color: white;
+}
+
+.lightBorder {
+  border: 2px solid white;
+}
+label {
+  font-size: 0.6em;
+}
+p {
+  margin: 1.3px 10px;
+  display: flex;
+}
+#defaultScale {
+  font-size: 1em;
+  line-height: 1px;
+  outline: none;
+}
+#centimeters {
+  font-size: 1.5em;
+  line-height: 1px;
+}
+#meters {
+  font-size: 1.5em;
+  line-height: 1px;
+}
+#clearCanvas {
+  cursor: pointer;
+  padding: 0.4em 0.5em;
+  font-size: 0.6em;
+  color: white;
+  background: red;
+  outline: none;
+  margin-left: auto;
+}
+#calcBtn {
+  padding: 0.4em 0.5em;
+  font-size: 0.6em;
+  background: blue;
+  color: white;
+  outline: none;
+  cursor: pointer;
+}

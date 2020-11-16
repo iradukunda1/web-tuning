@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>web - Tunings</title>
+    <link rel="icon" href="./images/favicon.ico" />
+    <link href="./css/index.css" rel="stylesheet">
+    <script src="./js/index.js"></script>
+</head>
+
+<body>
+    <!-- <img class="hidden" id="goofyPic"
+        src="https://res.cloudinary.com/newpoint/image/upload/v1603986942/image/image_sal4vg.jpg"
+        alt="Goofy pic of me" /> -->
+    <!-- <img class="hidden" id="goofyPic" src="image_sal4vg.jpg" alt="Goofy pic of me" /> -->
+    <canvas id="canvas"></canvas>
+
+    <div id="controls">
+        <div class="lightBorder">
+            <p style="display: none;"><label>Fill Color: <input id="fillColor" type="color" value="#24B0D5"></label></p>
+            <p style="display: none;"><label>Fill Canvas: <input id="backgroundColor" type="color"
+                        value="#FFFFFF"></label></p>
+            <p style="display: none;"><label>Stroke Color: <input id="strokeColor" type="color"></label></p>
+        </div>
+
+        <div class="lightBorder">
+            <p><label>Scale &nbsp;&nbsp;&nbsp; 1:&nbsp;&nbsp;&nbsp;&nbsp;<input id="defaultScale"
+                        placeholder="Enter scale eg:1500" type="text" value="100"></label></p>
+            <p><label>Centimeters: &nbsp;&nbsp;&nbsp;<input id="centimeters" disabled type="text"></label></p>
+            <p><label>Menters: &nbsp;&nbsp;&nbsp;&nbsp;<input id="meters" disabled type="text"></label></p>
+        </div>
+        <p>
+            <input id="calcBtn" type="button" value="Calculate Total">
+            <input id="clearCanvas" type="button" value="Clear Canvas">
+        </p>
+
+    </div>
+</body>
+
+</html>
