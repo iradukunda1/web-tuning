@@ -262,9 +262,9 @@ function init() {
     canvas.addEventListener('mouseup', dragStop, false);
     clearCanvas.addEventListener("click", eraseCanvas, false);
     calculate.addEventListener("click", calculateTotal, false);
-    undo.addEventListener("click", clearLastLine, false)
-    redo.addEventListener("click", redoCleared, false)
-    opacity()
+    undo.addEventListener("click", clearLastLine, false);
+    redo.addEventListener("click", redoCleared, false);
+    opacity();
 
 }
 function opacity() {
