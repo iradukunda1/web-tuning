@@ -4,6 +4,8 @@ var canvas,
     dragStartLocation,
     dragStopLocation,
     snapshot,
+    undo,
+    redo,
     currentCent = 0,
     currentMet = 0,
     totalCent = 0.00,
@@ -15,6 +17,9 @@ let endCoordinates = []
 let lines = []
 let linesSum = []
 let clearedLines = []
+let clearedMeter = []
+let clearedStratCoordinate = []
+let clearedEndCoordinate = []
 
 function getCanvasCoordinates(event) {
     var x = event.clientX - canvas.getBoundingClientRect().left,
@@ -36,7 +41,7 @@ function drawLine(position) {
     // context.lineTo(position.x, position.y);
     // context.stroke();
     context.fillStyle = "black"
-    if (dragStartLocation.x < position.x + 8) {
+    if (dragStartLocation.x && dragStartLocation.x < position.x + 8) {
         context.fillRect(dragStartLocation.x, dragStartLocation.y, lineDistance(dragStartLocation, position), 1.5)
     } else {
         context.fillRect(dragStartLocation.x, dragStartLocation.y, 1.5, lineDistance(dragStartLocation, position))
@@ -113,12 +118,11 @@ function calculateTotal() {
         let sumLineStartPoint = startCoordinates[0]
         let endLineSumPosition = endCoordinates[endCoordinates.length - 1]
         if (endLineSumPosition.x > sumLineStartPoint.x + 8) {
-            horizontal = sumLineStartPoint
-            vertical = endLineSumPosition
             context.moveTo(sumLineStartPoint.x, sumLineStartPoint.y - 3)
             context.lineTo(endLineSumPosition.x, sumLineStartPoint.y - 3)
             context.stroke()
             context.fillStyle = "blue"
+            context.font = "15px times new roman"
             context.fillText(`${totalMet.toFixed(2)} m`, sumLineStartPoint.x + (endLineSumPosition.x - sumLineStartPoint.x) / 2, sumLineStartPoint.y - 5)
             lines.push({
                 dxy1: { x: sumLineStartPoint.x, y: sumLineStartPoint.y - 3 },
@@ -135,9 +139,9 @@ function calculateTotal() {
             context.moveTo(sumLineStartPoint.x + 5, sumLineStartPoint.y)
             context.lineTo(sumLineStartPoint.x + 5, endLineSumPosition.y)
             context.fillStyle = "blue"
+            context.font = "15px times new roman"
             context.fillText(`${totalMet.toFixed(2)}  m`, sumLineStartPoint.x + 8, sumLineStartPoint.y + (endLineSumPosition.y - sumLineStartPoint.y) / 2)
             context.stroke()
-            var textWidth = context.measureText(`${totalMet.toFixed(2)}  m`)
             lines.push({
                 dxy1: { x: sumLineStartPoint.x + 5, y: sumLineStartPoint.y },
                 dxy2: { x: sumLineStartPoint.x + 5, y: endLineSumPosition.y },
@@ -150,21 +154,32 @@ function calculateTotal() {
                 }
             })
         }
+        centimetersMeasure = []
+        metersMeasure = []
+        startCoordinates = []
+        endCoordinates = []
     }
-    centimetersMeasure = []
-    metersMeasure = []
-    startCoordinates = []
-    endCoordinates = []
 }
 function clearLastLine() {
     if (lines.length) {
         const lastItem = lines[lines.length - 1]
         const verticalComponent = lastItem.dxy2.x > lastItem.dxy1.x + 8
         clearedLines.push(lastItem)
+        if (lastItem.figure) {
+            var textWidth = context.measureText(lastItem.figure.total.toString())
+            var textHeight = textWidth.actualBoundingBoxDescent - textWidth.actualBoundingBoxAscent
+            context.clearRect(lastItem.figure.position.x, lastItem.figure.position.y, textWidth.width, textHeight)
+        }
         context.clearRect(
-            verticalComponent ? lastItem.dxy1.x : lastItem.dxy1.x - 2.5, verticalComponent ? lastItem.dxy1.y - 2.5 : lastItem.dxy1.y,
-            (verticalComponent ? lineDistance(lastItem.dxy1, lastItem.dxy2) : 4),
+            verticalComponent ? lastItem.dxy1.x - 1 : lastItem.dxy1.x - 2.5, verticalComponent ? lastItem.dxy1.y - 2.5 : lastItem.dxy1.y,
+            (verticalComponent ? lineDistance(lastItem.dxy1, lastItem.dxy2) + 1 : 4),
             (verticalComponent ? 4 : lineDistance(lastItem.dxy1, lastItem.dxy2)))
+        clearedMeter.push(metersMeasure[metersMeasure.length - 1])
+        metersMeasure.splice(metersMeasure.length - 1, 1)
+        clearedStratCoordinate.push(startCoordinates[startCoordinates.length - 1])
+        clearedEndCoordinate.push(endCoordinates[endCoordinates.length - 1])
+        startCoordinates.splice(startCoordinates.length - 1, 1)
+        endCoordinates.splice(endCoordinates.length - 1, 1)
         lines.splice(lines.length - 1, 1)
     }
 }
@@ -173,11 +188,22 @@ function redoCleared() {
         const lastItem = clearedLines[clearedLines.length - 1]
         const verticalComponent = lastItem.dxy2.x > lastItem.dxy1.x + 8
         lines.push(lastItem)
+        if (lastItem.figure) {
+            context.fillStyle = "blue"
+            context.font = "15px times new roman"
+            context.fillText(lastItem.figure.total, lastItem.figure.position.x, lastItem.figure.position.y)
+        }
         context.fillStyle = "black"
         context.fillRect(
             lastItem.dxy1.x, lastItem.dxy1.y,
             (verticalComponent ? lineDistance(lastItem.dxy1, lastItem.dxy2) : 1.5),
             (verticalComponent ? "1.5" : lineDistance(lastItem.dxy1, lastItem.dxy2)))
+        startCoordinates.push(clearedStratCoordinate[clearedStratCoordinate.length - 1])
+        endCoordinates.push(clearedEndCoordinate[clearedEndCoordinate.length - 1])
+        clearedStratCoordinate.splice(clearedStratCoordinate.length - 1, 1)
+        clearedEndCoordinate.splice(clearedEndCoordinate.length - 1, 1)
+        metersMeasure.push(clearedMeter[clearedMeter.length - 1])
+        clearedMeter.splice(clearedMeter.length - 1, 1)
         clearedLines.splice(clearedLines.length - 1, 1)
     }
 }
@@ -207,8 +233,7 @@ function eraseCanvas() {
     lines = []
     linesSum = []
     clearedLines = []
-    horizontalCoord = []
-    verticalCoord = []
+
 }
 
 // var image = new Image();
@@ -222,11 +247,11 @@ function init() {
     context = canvas.getContext('2d');
     canvas.width = 1200;
     canvas.height = 800;
+    undo = document.getElementById("undo");
+    redo = document.getElementById("redo");
     var fillColor = document.getElementById("fillColor"),
         clearCanvas = document.getElementById("clearCanvas"),
-        calculate = document.getElementById("calcBtn"),
-        undo = document.getElementById("undo"),
-        redo = document.getElementById("redo");
+        calculate = document.getElementById("calcBtn");
 
     context.strokeStyle = strokeColor.value;
     context.fillStyle = fillColor.value;
@@ -239,6 +264,28 @@ function init() {
     calculate.addEventListener("click", calculateTotal, false);
     undo.addEventListener("click", clearLastLine, false)
     redo.addEventListener("click", redoCleared, false)
+    opacity()
 
+}
+function opacity() {
+    requestAnimationFrame(opacity)
+    if (clearedLines.length) {
+        redo.style.pointerEvents = "all"
+        redo.style.opacity = "1"
+    } else {
+        redo.style.pointerEvents = "none"
+        redo.style.opacity = ".4"
+    }
+    if (lines.length) {
+        clearCanvas.style.pointerEvents = "all"
+        clearCanvas.style.opacity = "1"
+        undo.style.pointerEvents = "all"
+        undo.style.opacity = "1"
+    } else {
+        clearCanvas.style.opacity = ".4"
+        clearCanvas.style.pointerEvents = "none"
+        undo.style.pointerEvents = "none"
+        undo.style.opacity = ".4"
+    }
 }
 addEventListener('load', init, false);

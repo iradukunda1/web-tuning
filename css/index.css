@@ -27,7 +27,7 @@ canvas {
   position: fixed;
   top: 25px;
   width: 15%;
-  left: 2%;
+  left: 5%;
   justify-content: space-between;
   display: flex;
   border: 1px dotted black;
@@ -37,7 +37,7 @@ canvas {
 }
 #undo {
   background: rgb(105, 38, 167);
-  color: whitesmoke;
+  color: white;
   cursor: pointer;
   touch-action: none;
   border-radius: 5px;
@@ -48,10 +48,10 @@ canvas {
 }
 #redo {
   outline: none;
-  touch-action: none;
-  background: rgb(43, 226, 156);
-  color: whitesmoke;
+  background: rgb(32, 152, 24);
+  color: white;
   cursor: pointer;
+  touch-action: none;
   border-radius: 5px;
   font-size: 0.9em;
   padding: 0.2em 0.8em;
