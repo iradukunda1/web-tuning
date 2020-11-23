@@ -36,16 +36,16 @@ function restoreSnapshot() {
 }
 
 function drawLine(position) {
-    // context.beginPath();
-    // context.moveTo(dragStartLocation.x, dragStartLocation.y);
-    // context.lineTo(position.x, position.y);
-    // context.stroke();
-    context.fillStyle = "black"
-    if (dragStartLocation.x && dragStartLocation.x < position.x + 8) {
-        context.fillRect(dragStartLocation.x, dragStartLocation.y, lineDistance(dragStartLocation, position), 1.5)
-    } else {
-        context.fillRect(dragStartLocation.x, dragStartLocation.y, 1.5, lineDistance(dragStartLocation, position))
-    }
+    context.beginPath();
+    context.moveTo(dragStartLocation.x, dragStartLocation.y);
+    context.lineTo(position.x, position.y);
+    context.stroke();
+    // context.fillStyle = "black"
+    // if (dragStartLocation.x && dragStartLocation.x < position.x + 8) {
+    //     context.fillRect(dragStartLocation.x, dragStartLocation.y, lineDistance(dragStartLocation, position), 1.5)
+    // } else {
+    //     context.fillRect(dragStartLocation.x, dragStartLocation.y, 1.5, lineDistance(dragStartLocation, position))
+    // }
     let distance_px = lineDistance(dragStartLocation, position);
     let distance_cm = 0.02645833 * distance_px;
     displayMeasures(distance_cm);
