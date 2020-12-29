@@ -1,6 +1,4 @@
-var canvas,
-    context,
-    dragging = !1,
+var dragging = !1,
     dragStartLocation,
     dragStopLocation,
     snapshot,
@@ -12,6 +10,12 @@ var canvas,
     mx = 0,
     my = 0,
     angle = 0,
+    curveCont_x,
+    curveCont_y,
+    tool,
+    tool_select,
+    tool_default = 'line',
+    tools = {},
     totalMet = 0.00;
 let centimetersMeasure = []
 let metersMeasure = []
@@ -23,6 +27,13 @@ let clearedLines = []
 let clearedMeter = []
 let clearedStratCoordinate = []
 let clearedEndCoordinate = []
+let xPts =[]
+let yPts = []
+
+var canvas = document.querySelector('canvas');
+var context = canvas.getContext('2d');
+    canvas.width = 1200;
+    canvas.height = 800;
 
 function getCanvasCoordinates(event) {
     var x = event.clientX - canvas.getBoundingClientRect().left,
@@ -39,19 +50,28 @@ function restoreSnapshot() {
 }
 
 function drawLine(position) {
-    // context.beginPath();
-    // context.moveTo(dragStartLocation.x, dragStartLocation.y);
-    // context.lineTo(position.x, position.y);
+    // const xDistance = Math.abs(position.x - dragStartLocation.x)
+    // const yDistance = Math.abs(position.y - dragStartLocation.y)
+    context.beginPath();
+    context.moveTo(dragStartLocation.x, dragStartLocation.y);
+    // context.quadraticCurveTo(curveCont_x,curveCont_y, position.x, position.y);
+    context.lineTo(position.x, position.y);
     // context.lineCap = 'round';
-    // context.stroke();
+    context.stroke();
     context.fillStyle = "black"
-    const xDistance = Math.abs(position.x - dragStartLocation.x)
-    const yDistance = Math.abs(position.y - dragStartLocation.y)
-    if (xDistance > yDistance) {
-        context.fillRect(dragStartLocation.x, dragStartLocation.y, lineDistance(dragStartLocation, position), 1.5)
-    } else {
-        context.fillRect(dragStartLocation.x, dragStartLocation.y, 1.5, lineDistance(dragStartLocation, position))
-    }
+    // if (xDistance > yDistance) {
+    //     if (Math.ceil(dragStartLocation.x) > Math.ceil(position.x)) {
+    //     context.fillRect(position.x, position.y, lineDistance(position, dragStartLocation), 1.5)
+    //     }else{
+    //     context.fillRect(dragStartLocation.x, dragStartLocation.y, lineDistance(dragStartLocation, position), 1.5)
+    //     }
+    // } else {
+    //     if (Math.ceil(dragStartLocation.y) > Math.ceil(position.y)) {
+    //     context.fillRect(position.x, position.y, 1.5, lineDistance(position, dragStartLocation))
+    //     }else{
+    //     context.fillRect(dragStartLocation.x, dragStartLocation.y, 1.5, lineDistance(dragStartLocation , position))            
+    //     }
+    // }
     let distance_px = lineDistance(dragStartLocation, position);
     let distance_cm = 0.02645833 * distance_px;
     displayMeasures(distance_cm);
@@ -72,6 +92,15 @@ function displayMeasures(cm_values) {
 }
 
 function draw(position) {
+    // const xDistance = Math.abs(position.x - dragStartLocation.x)
+    // const yDistance = Math.abs(position.y - dragStartLocation.y)
+    // if (xDistance > yDistance) {
+    //     curveCont_x= (position.x + dragStartLocation.x) / 2
+    //     curveCont_y = Math.ceil(position.x) > Math.ceil(dragStartLocation.x) ? ((position.y + dragStartLocation.y / 2) - lineDistance(position, dragStartLocation) /2 ) : ((position.y + dragStartLocation.y / 2) + lineDistance(dragStartLocation,position) /2 )
+    // }else{
+    //     curveCont_x = Math.ceil(position.y) > Math.ceil(dragStartLocation.y) ? ((position.x + dragStartLocation.x) / 2) + lineDistance(dragStartLocation,position) /2  : ((position.x + dragStartLocation.x) / 2) - ( position.x + dragStartLocation.x) /2
+    //     curveCont_y = (position.y + dragStartLocation.y) /2
+    // }
     drawLine(position);
 }
 
@@ -80,7 +109,10 @@ function dragStart(event) {
     var position = getCanvasCoordinates(event);
     dragStartLocation = position
     startCoordinates.push(dragStartLocation)
+    xPts.push(dragStartLocation.x)
+    yPts.push(dragStartLocation.y)
     takeSnapshot();
+
 }
 
 function drag(event) {
@@ -104,6 +136,8 @@ function dragStop(event) {
     currentMet = ((distance_cm * 100) * (1 / scaleElm.value))
     dragStopLocation = position
     endCoordinates.push(dragStopLocation)
+    xPts.push(dragStopLocation.x)
+    yPts.push(dragStopLocation.y)
     centimetersMeasure.push(currentCent)
     metersMeasure.push(currentMet)
     lines.push({ dxy1: dragStartLocation, dxy2: position })
@@ -168,6 +202,7 @@ function calculateTotal() {
         startCoordinates = []
         endCoordinates = []
     }
+    console.log(Math.abs(calculateArea()))
 }
 function clearLastLine() {
     if (lines.length) {
@@ -179,6 +214,21 @@ function clearLastLine() {
             var textWidth = context.measureText(lastItem.figure.total.toString())
             var textHeight = textWidth.actualBoundingBoxDescent - textWidth.actualBoundingBoxAscent
             context.clearRect(lastItem.figure.position.x, lastItem.figure.position.y, textWidth.width, textHeight)
+        }
+        if (xDistance > yDistance) {
+            if (Math.ceil(lastItem.dxy1.x) > Math.ceil(lastItem.dxy2.x)) {
+                var temp
+                temp = lastItem.dxy1.x     
+                lastItem.dxy1.x =  lastItem.dxy2.x
+                lastItem.dxy2.x = temp
+            }
+        }else{
+            if (Math.ceil(lastItem.dxy1.y) > Math.ceil(lastItem.dxy2.y)) {
+                var temp
+                temp = lastItem.dxy1.y     
+                lastItem.dxy1.y =  lastItem.dxy2.y
+                lastItem.dxy2.y = temp
+            }
         }
         context.clearRect(
             xDistance > yDistance ? lastItem.dxy1.x : lastItem.dxy1.x - 2.5, xDistance > yDistance ? lastItem.dxy1.y - 2.5 : lastItem.dxy1.y,
@@ -236,9 +286,40 @@ function redoCleared() {
 //     context.restore();
 // }
 
+function polygonArea(X, Y, numPoints){ 
+       let area = 0;  
+       let j = numPoints-1; 
+
+        for (let i=0; i<numPoints; i++){
+             area +=  (X[j]+X[i]) * (Y[j]-Y[i]); 
+             j = i;  
+        }
+    return area/2;
+}
+
 function lineDistance(p1, p2) {
     return Math.hypot(p2.x - p1.x, p2.y - p1.y);
 }
+
+function calculateArea(){
+    var xPt = []
+    var yPt = []
+    xPt.push((xPts[0] + xPts[xPts.length-1])/2)
+    yPt.push((yPts[0] + yPts[yPts.length-1])/2)
+    xPts.splice(xPts.length-1,1)
+    xPts.splice(0,1)
+    yPts.splice(yPts.length-1,1)
+    yPts.splice(0,1)
+    const pointLength = xPts.length
+    for (var i = 0; i < pointLength / 2; i++) {
+        xPt.push((xPts[0] + xPts[1])/2)
+        xPts.splice(0,2)
+        yPt.push((yPts[0] + yPts[1])/2)
+        yPts.splice(0,2)
+    }
+   return polygonArea(xPt,yPt,yPt.length)
+}
+
 function eraseCanvas() {
     cm_Elm = document.getElementById("centimeters");
     m_Elm = document.getElementById("meters");
@@ -263,13 +344,17 @@ function eraseCanvas() {
 // }, !1)
 // image.src = "image_sal4vg.jpg";
 
+function ev_tool_change(ev) {
+    if (tools[this.value]) {
+      tool = new tools[this.value]();
+      console.log(tools)
+    }
+}
+
 function init() {
-    canvas = document.getElementById("canvas");
-    context = canvas.getContext('2d');
-    canvas.width = 1200;
-    canvas.height = 800;
     undo = document.getElementById("undo");
     redo = document.getElementById("redo");
+    tool_select = document.getElementById("dtool");
     var fillColor = document.getElementById("fillColor"),
         clearCanvas = document.getElementById("clearCanvas"),
         calculate = document.getElementById("calcBtn");
@@ -285,7 +370,13 @@ function init() {
     calculate.addEventListener("click", calculateTotal, !1);
     undo.addEventListener("click", clearLastLine, !1);
     redo.addEventListener("click", redoCleared, !1);
+    tool_select.addEventListener("change", ev_tool_change, !1);
     opacity();
+
+    if (tools[tool_default]) {
+      tool = new tools[tool_default]();
+      tool_select.value = tool_default;
+    }
 }
 function opacity() {
     requestAnimationFrame(opacity)
@@ -308,14 +399,5 @@ function opacity() {
         undo.style.opacity = ".4"
     }
 }
-addEventListener('load', init, !1);
 
-function rtclickcheck(keyp) {
-    if (navigator.appName == "Netscape" && keyp.which == 3) {
-        return false;
-    }
-    if (navigator.appVersion.indexOf("MSIE") != -1 && event.button == 2) {
-        return false;
-    }
-}
-document.onmousedown = rtclickcheck;
+addEventListener('load', init, !1);

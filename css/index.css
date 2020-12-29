@@ -23,6 +23,23 @@ canvas {
   background-size: cover;
   background-repeat: no-repeat;
 }
+.drawing-tool{
+  position: fixed;
+  top: 2%;
+  margin-left: 7em;
+  padding: 1em
+}
+#dtool{
+  background: white;
+  border: 1px solid;
+  border-radius: 5px;
+  font-size: 10px;
+  padding: 1px;
+  outline:none;
+}
+#dtool:hover{
+  cursor: pointer
+}
 .lines-control {
   position: fixed;
   top: 25px;
