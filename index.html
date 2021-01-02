@@ -6,7 +6,6 @@
     <title>web - Tunings</title>
     <link rel="icon" href="./images/favicon.ico" />
     <link href="./css/index.css" rel="stylesheet">
-    <script src="./js/index.js"></script>
 </head>
 
 <body>
@@ -14,10 +13,27 @@
         src="https://res.cloudinary.com/newpoint/image/upload/v1603986942/image/image_sal4vg.jpg"
         alt="Goofy pic of me" /> -->
     <!-- <img class="hidden" id="goofyPic" src="image_sal4vg.jpg" alt="Goofy pic of me" /> -->
-    <canvas id="canvas"></canvas>
+    <container id="canvas">
+        <canvas id="canvas">            
+        <p>Unfortunately, your browser is currently unsupported by our web
+        application.  We are sorry for the inconvenience. Please use one of the
+        supported browsers listed below, or draw the image you want using an
+        offline tool.</p>
+        <p>Supported browsers: <a href="http://www.opera.com">Opera</a>, <a
+          href="http://www.mozilla.com">Firefox</a>, 
+          <a href="https://www.google.com/chrome">Chrome</a>,
+          <a href="https://www.apple.com/safari">Safari</a>, and <a
+          href="http://www.konqueror.org">Konqueror</a>.</p>
+        </canvas>
+    </container>
     <div class="lines-control">
         <button id="undo">undo</button>
         <button id="redo">redo</button>
+    </div>
+    <div class="drawing-tool"><label>Drawing tool: <select id="dtool">
+      <option value="line">Line</option>
+      <option value="pencil">Pencil</option>
+      </select></label>
     </div>
     <div id="controls">
         <div class="lightBorder">
@@ -35,10 +51,11 @@
         </div>
         <p>
             <input id="calcBtn" type="button" value="Calculate Total">
-            <input id="clearCanvas" type="button" value="Clear Canvas">
+            <input id="clearCanvas" type="button" value="Erase all">
         </p>
 
     </div>
 </body>
-
+    <script src="./js/index.js"></script>
+    <script src="https://unpkg.com/konva@7.2.2/konva.min.js"></script>
 </html>
