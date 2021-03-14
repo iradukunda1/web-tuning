@@ -13,23 +13,23 @@
         src="https://res.cloudinary.com/newpoint/image/upload/v1603986942/image/image_sal4vg.jpg"
         alt="Goofy pic of me" /> -->
     <!-- <img class="hidden" id="goofyPic" src="image_sal4vg.jpg" alt="Goofy pic of me" /> -->
-    <container id="canvas">
-        <canvas id="canvas">            
+    <canvas id="canvas">
         <p>Unfortunately, your browser is currently unsupported by our web
         application.  We are sorry for the inconvenience. Please use one of the
         supported browsers listed below, or draw the image you want using an
         offline tool.</p>
         <p>Supported browsers: <a href="http://www.opera.com">Opera</a>, <a
-          href="http://www.mozilla.com">Firefox</a>, 
+          href="http://www.mozilla.com">Firefox</a>,
           <a href="https://www.google.com/chrome">Chrome</a>,
           <a href="https://www.apple.com/safari">Safari</a>, and <a
           href="http://www.konqueror.org">Konqueror</a>.</p>
         </canvas>
-    </container>
     <div class="lines-control">
         <button id="undo">undo</button>
         <button id="redo">redo</button>
     </div>
+    <!-- <input type="file" id="imageLoader" name="imageLoader" accept=".jpg, .jpeg, .png" class="imageLoader" /> -->
+    <input id="clearCanvas" type="button" value="Erase all">
     <div class="drawing-tool"><label>Drawing tool: <select id="dtool">
       <option value="line">Line</option>
       <option value="pencil">Pencil</option>
@@ -49,13 +49,13 @@
             <p><label>Centimeters: &nbsp;&nbsp;&nbsp;<input id="centimeters" disabled type="text"></label></p>
             <p><label>Menters: &nbsp;&nbsp;&nbsp;&nbsp;<input id="meters" disabled type="text"></label></p>
         </div>
-        <p>
-            <input id="calcBtn" type="button" value="Calculate Total">
-            <input id="clearCanvas" type="button" value="Erase all">
-        </p>
+        <div>
+            <input id="calcBtn" type="button" value="Calculate Area"><br/>
+            <label> <b style="font-size: 1.7em"> Area:</b>  <input id="totalArea" type="text" disabled></label>
+        </div>
 
     </div>
 </body>
-    <script src="./js/index.js"></script>
-    <script src="https://unpkg.com/konva@7.2.2/konva.min.js"></script>
+<script src="./js/index.js"></script>
+
 </html>
